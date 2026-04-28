@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InstallController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KioskController;
@@ -8,6 +9,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitorController;
 use Illuminate\Support\Facades\Route;
+
+// ── INSTALLER / ACTIVATION ────────────────────────────────────
+Route::get('/install', [InstallController::class, 'index'])->name('install.index');
+Route::post('/install/activate', [InstallController::class, 'activate'])->name('install.activate');
 
 /*
 |--------------------------------------------------------------------------
