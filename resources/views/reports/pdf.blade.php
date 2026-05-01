@@ -21,15 +21,8 @@
 </head>
 <body>
     <div class="header">
-        @php
-            $logoPath = \App\Models\Setting::get('app_logo');
-            $logoFull = $logoPath ? storage_path('app/public/' . $logoPath) : null;
-        @endphp
-
-        @if($logoFull && file_exists($logoFull))
-            <img src="{{ $logoFull }}" style="height: 60px; margin-bottom: 10px;">
-        @else
-            <!-- Logo tidak ditemukan di: {{ $logoFull }} -->
+        @if(isset($gSettings['app_logo']))
+            <img src="{{ asset('storage/' . $gSettings['app_logo']) }}" style="height: 60px; margin-bottom: 10px;">
         @endif
 
         <h2>{{ strtoupper($appName) }}</h2>

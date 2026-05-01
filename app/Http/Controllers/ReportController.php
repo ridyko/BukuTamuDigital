@@ -70,7 +70,12 @@ class ReportController extends Controller
             'user' => auth()->user()->name
         ];
 
-        $pdf = Pdf::loadView('reports.pdf', $data)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('reports.pdf', $data)
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif'
+            ]);
         return $pdf->download('Laporan_Kunjungan_' . now()->format('Ymd_His') . '.pdf');
     }
 }
