@@ -21,7 +21,9 @@
 </head>
 <body>
     <div class="header">
-        @if(isset($gSettings['app_logo']))
+        @if(isset($logoBase64) && $logoBase64)
+            <img src="{{ $logoBase64 }}" style="height: 60px; margin-bottom: 10px;">
+        @elseif(isset($gSettings['app_logo']))
             <img src="{{ asset('storage/' . $gSettings['app_logo']) }}" style="height: 60px; margin-bottom: 10px;">
         @endif
 

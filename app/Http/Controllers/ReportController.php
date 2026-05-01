@@ -62,12 +62,25 @@ class ReportController extends Controller
 
         $visitors = $query->get();
         
+        // Pre-process logo to Base64 for maximum compatibility
+        $logoBase64 = null;
+        $logoPath = \App\Models\Setting::get('app_logo');
+        if ($logoPath) {
+            $logoFull = storage_path('app/public/' . $logoPath);
+            if (file_exists($logoFull)) {
+                $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
+                $mime = ($ext == 'png') ? 'image/png' : 'image/jpeg';
+                $logoBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($logoFull));
+            }
+        }
+        
         $data = [
             'visitors' => $visitors,
             'date_from' => $request->date_from,
             'date_to' => $request->date_to,
             'generated_at' => now()->format('d M Y H:i:s'),
-            'user' => auth()->user()->name
+            'user' => auth()->user()->name,
+            'logoBase64' => $logoBase64
         ];
 
         $pdf = Pdf::loadView('reports.pdf', $data)
