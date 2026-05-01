@@ -23,31 +23,15 @@
     <div class="header">
         @php
             $logoPath = \App\Models\Setting::get('app_logo');
-            $logoBase64 = null;
-            
-            if ($logoPath) {
-                $logoFull = storage_path('app/public/' . $logoPath);
-                if (file_exists($logoFull) && is_readable($logoFull)) {
-                    $imageData = base64_encode(file_get_contents($logoFull));
-                    // Pemetaan otomatis Mime Type berdasarkan ekstensi
-                    $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
-                    $mimes = [
-                        'png'  => 'image/png',
-                        'jpg'  => 'image/jpeg',
-                        'jpeg' => 'image/jpeg',
-                        'gif'  => 'image/gif',
-                        'svg'  => 'image/svg+xml',
-                        'webp' => 'image/webp'
-                    ];
-                    $mimeType = $mimes[$ext] ?? 'image/png';
-                    $logoBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
-                }
-            }
+            $logoFull = $logoPath ? storage_path('app/public/' . $logoPath) : null;
         @endphp
 
-        @if($logoBase64)
-            <img src="{{ $logoBase64 }}" style="height: 50px; margin-bottom: 10px;">
+        @if($logoFull && file_exists($logoFull))
+            <img src="{{ $logoFull }}" style="height: 60px; margin-bottom: 10px;">
+        @else
+            <!-- Logo tidak ditemukan di: {{ $logoFull }} -->
         @endif
+
         <h2>{{ strtoupper($appName) }}</h2>
         <p>{{ $appOrg }}</p>
         <div style="font-size: 10px; color: #666; margin-top: 5px;">{{ \App\Models\Setting::get('app_address') }}</div>
