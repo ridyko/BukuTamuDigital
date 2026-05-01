@@ -33,6 +33,42 @@ Notifikasi otomatis ke HP petugas atau tamu (membutuhkan WA Gateway) untuk membe
 
 ---
 
+## 👥 Manajemen Role & Hak Akses
+
+Aplikasi ini memiliki sistem otorisasi berbasis Role yang ketat untuk menjaga keamanan data:
+
+### 👑 1. Super Admin
+- **Hak Akses**: Seluruh fitur aplikasi.
+- **Aktivitas**:
+  - Manajemen Pengaturan Umum & Branding (White-Label).
+  - Manajemen Akun Pengguna (Tambah/Edit/Hapus User).
+  - Monitoring Dashboard Global & Statistik Kunjungan.
+  - Akses penuh ke seluruh Laporan & Log Sistem.
+
+### 👮 2. Receptionist / Security
+- **Hak Akses**: Operasional harian buku tamu.
+- **Aktivitas**:
+  - Monitoring tamu yang sedang berada di lokasi (In-House).
+  - Membantu pendaftaran tamu (Manual Check-in).
+  - Melakukan proses Check-out tamu secara cepat.
+  - Cetak label/kartu tamu (jika diperlukan).
+
+### 👨‍💼 3. Staff / Host
+- **Hak Akses**: Dashboard pribadi.
+- **Aktivitas**:
+  - Melihat daftar tamu yang datang menemui dirinya.
+  - Menerima notifikasi kedatangan tamu secara real-time.
+  - Melihat riwayat kunjungan pribadi.
+
+### 🚶 4. Guest / Kiosk (Public Interface)
+- **Hak Akses**: Registrasi mandiri.
+- **Aktivitas**:
+  - Mengisi formulir kunjungan digital.
+  - Memilih tujuan (Staff) secara otomatis.
+  - Mendapatkan QR Code Kunjungan sebagai bukti check-in.
+
+---
+
 ## 🖥️ Kebutuhan Sistem
 
 - **PHP 8.2** atau lebih tinggi.
