@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+/wa-gateway/node_modules
+/wa-gateway/.wwebjs_auth
+/wa-gateway/.puppeteer_cache
