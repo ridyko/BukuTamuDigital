@@ -59,8 +59,10 @@ class GeneralSettingController extends Controller
             \Illuminate\Support\Facades\Artisan::call('view:clear');
             \Illuminate\Support\Facades\Artisan::call('cache:clear');
             \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('clear-compiled');
+            \Illuminate\Support\Facades\Artisan::call('optimize');
             
-            return back()->with('success', 'Semua cache sistem berhasil dibersihkan! Aplikasi kini dalam kondisi segar.');
+            return back()->with('success', 'Semua cache sistem berhasil dibersihkan dan sistem telah dioptimalkan! Aplikasi kini dalam kondisi paling segar.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal membersihkan cache: ' . $e->getMessage());
         }

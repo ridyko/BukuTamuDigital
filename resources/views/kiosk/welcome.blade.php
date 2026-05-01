@@ -101,9 +101,12 @@
         Sistem Aktif
     </div>
 
-    <h1 class="welcome-title">
-        Selamat Datang di<br><span>{{ $appOrg }}</span>
+    <h1 class="welcome-title" style="margin-bottom: 10px;">
+        Selamat Datang di<br><span>{{ $appName }}</span>
     </h1>
+    <div style="font-size: 24px; font-weight: 600; color: var(--muted); margin-bottom: 40px; opacity: 0.8;">
+        {{ $appOrg }}
+    </div>
     <p class="welcome-sub">Silakan pilih layanan yang Anda butuhkan</p>
 
     <div class="welcome-btns">
