@@ -1,10 +1,20 @@
+@php
+    $gSettings = \App\Models\Setting::getAll();
+    $appName   = $gSettings['app_name'] ?? 'Buku Tamu Digital';
+    $appOrg    = $gSettings['app_org'] ?? 'SMKN 2 Jakarta';
+    $appLogo   = isset($gSettings['app_logo']) ? asset('storage/'.$gSettings['app_logo']) : null;
+    $appFav    = isset($gSettings['app_favicon']) ? asset('storage/'.$gSettings['app_favicon']) : null;
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') — Buku Tamu Digital SMKN 2 Jakarta</title>
+    <title>@yield('title', 'Dashboard') — {{ $appName }} {{ $appOrg }}</title>
+    @if($appFav)
+        <link rel="icon" type="image/png" href="{{ $appFav }}">
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -445,9 +455,13 @@
     <!-- ── SIDEBAR ────────────────────────────── -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-icon">🏫</div>
-            <div class="logo-title">Buku Tamu Digital</div>
-            <div class="logo-subtitle">SMKN 2 Jakarta</div>
+            @if($appLogo)
+                <img src="{{ $appLogo }}" style="height: 45px; margin-bottom: 12px; object-fit: contain">
+            @else
+                <div class="logo-icon">🏫</div>
+            @endif
+            <div class="logo-title">{{ $appName }}</div>
+            <div class="logo-subtitle">{{ $appOrg }}</div>
         </div>
 
         <nav class="sidebar-nav">
@@ -479,6 +493,11 @@
             <div class="nav-label">Administrasi</div>
             <a href="{{ route('users.index') }}" class="nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
                 <i class="fas fa-user-gear"></i> Manajemen Pengguna
+            </a>
+            
+            <div class="nav-label">Pengaturan</div>
+            <a href="{{ route('settings.general') }}" class="nav-item {{ request()->routeIs('settings.general*') ? 'active' : '' }}">
+                <i class="fas fa-sliders"></i> Pengaturan Umum
             </a>
             <a href="{{ route('settings.whatsapp.index') }}" class="nav-item {{ request()->routeIs('settings.whatsapp.*') ? 'active' : '' }}">
                 <i class="fab fa-whatsapp"></i> WhatsApp Gateway
@@ -613,6 +632,18 @@
             @endif
 
             @yield('content')
+
+            <footer style="margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); text-align: center;">
+                <div style="font-size: 13px; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">{{ $appOrg }}</div>
+                @if(isset($gSettings['app_address']))
+                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                        {{ $gSettings['app_address'] }}
+                    </div>
+                @endif
+                <div style="font-size: 11px; color: var(--text-muted);">
+                    {{ $gSettings['app_footer'] ?? '© '.date('Y').' '.$appName }}
+                </div>
+            </footer>
         </div>
     </div>
 </div>

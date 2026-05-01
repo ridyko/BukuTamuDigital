@@ -102,7 +102,7 @@
     </div>
 
     <h1 class="welcome-title">
-        Selamat Datang di<br><span>SMKN 2 Jakarta</span>
+        Selamat Datang di<br><span>{{ $gSettings['app_org'] ?? 'SMKN 2 Jakarta' }}</span>
     </h1>
     <p class="welcome-sub">Silakan pilih layanan yang Anda butuhkan</p>
 

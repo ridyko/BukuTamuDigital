@@ -91,6 +91,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:superadmin')->group(function () {
         Route::resource('users', UserController::class);
         
+        // General Settings
+        Route::get('/settings/general', [\App\Http\Controllers\GeneralSettingController::class, 'index'])->name('settings.general');
+        Route::post('/settings/general', [\App\Http\Controllers\GeneralSettingController::class, 'update'])->name('settings.general.update');
+
         // ── WhatsApp Settings ───────────────────────────────────
         Route::get('/settings/whatsapp', [\App\Http\Controllers\WhatsAppSettingController::class, 'index'])->name('settings.whatsapp.index');
         Route::post('/settings/whatsapp/update', [\App\Http\Controllers\WhatsAppSettingController::class, 'update'])->name('settings.whatsapp.update');

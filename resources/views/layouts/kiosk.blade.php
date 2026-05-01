@@ -1,10 +1,20 @@
+@php
+    $gSettings = \App\Models\Setting::getAll();
+    $appName   = $gSettings['app_name'] ?? 'Buku Tamu Digital';
+    $appOrg    = $gSettings['app_org'] ?? 'SMKN 2 Jakarta';
+    $appLogo   = isset($gSettings['app_logo']) ? asset('storage/'.$gSettings['app_logo']) : null;
+    $appFav    = isset($gSettings['app_favicon']) ? asset('storage/'.$gSettings['app_favicon']) : null;
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Kiosk') — Buku Tamu Digital SMKN 2 Jakarta</title>
+    <title>@yield('title', 'Kiosk') — {{ $appName }} {{ $appOrg }}</title>
+    @if($appFav)
+        <link rel="icon" type="image/png" href="{{ $appFav }}">
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -217,10 +227,14 @@
 <div class="kiosk-wrap">
     <header class="kiosk-header">
         <div class="kiosk-header-logo">
-            <div class="logo-icon">🏫</div>
+            @if($appLogo)
+                <img src="{{ $appLogo }}" style="height: 40px; object-fit: contain">
+            @else
+                <div class="logo-icon">🏫</div>
+            @endif
             <div class="logo-text">
-                <h1>Buku Tamu Digital</h1>
-                <p>SMK Negeri 2 Jakarta</p>
+                <h1>{{ $appName }}</h1>
+                <p>{{ $appOrg }}</p>
             </div>
         </div>
         <div class="kiosk-header-right">
