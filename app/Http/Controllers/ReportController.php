@@ -116,7 +116,10 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('reports.pdf', $data)
             ->setPaper('a4', 'landscape')
             ->setOptions([
+                'tempDir' => storage_path('app/public'),
+                'logOutputFile' => storage_path('logs/dompdf.log.html'),
                 'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
                 'defaultFont' => 'sans-serif'
             ]);
         return $pdf->download('Laporan_Kunjungan_' . now()->format('Ymd_His') . '.pdf');
