@@ -24,4 +24,12 @@ class Setting extends Model
     {
         return self::updateOrCreate(['key' => $key], ['value' => $value]);
     }
+
+    /**
+     * Get all settings as key-value array
+     */
+    public static function getAll()
+    {
+        return self::all()->pluck('value', 'key')->toArray();
+    }
 }
