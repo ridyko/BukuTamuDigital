@@ -15,7 +15,6 @@
         }
     </script>
     <style>
-    <style>
         :root {
             --sidebar-w: 260px;
             --bg-dark: #0b1120;
@@ -37,6 +36,7 @@
             --radius: 12px;
             --radius-sm: 8px;
             --shadow: 0 4px 24px rgba(0,0,0,0.35);
+            --bg-mute: rgba(255,255,255,0.04);
         }
 
         /* ── LIGHT MODE VARIABLES ──────────────── */
@@ -52,6 +52,7 @@
             --accent: #3b82f6;
             --shadow: 0 4px 12px rgba(0,0,0,0.05);
             --accent-glow: rgba(59,130,246,0.08);
+            --bg-mute: rgba(0,0,0,0.04);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -125,7 +126,7 @@
         .user-card {
             display: flex; align-items: center; gap: 10px;
             padding: 10px; border-radius: var(--radius-sm);
-            background: rgba(255,255,255,0.03);
+            background: var(--bg-mute);
         }
         .user-avatar {
             width: 36px; height: 36px; border-radius: 50%;
@@ -160,14 +161,14 @@
         .topbar-right { display: flex; align-items: center; gap: 12px; }
         .topbar-time {
             font-size: 12px; color: var(--text-secondary);
-            background: rgba(255,255,255,0.04); padding: 6px 12px; border-radius: 8px;
+            background: var(--bg-mute); padding: 6px 12px; border-radius: 8px;
         }
 
         /* ── NOTIFICATION BELL ───────────────────── */
         .notif-wrap { position: relative; }
         .notif-bell {
             width: 36px; height: 36px; border-radius: 8px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            background: var(--bg-mute); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
             color: var(--text-secondary); font-size: 14px; cursor: pointer;
             transition: all .2s; position: relative;
