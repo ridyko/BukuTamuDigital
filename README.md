@@ -1,72 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📔 Buku Tamu Digital Professional (White-Label Ready)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/License-Commercial-green.svg)](#)
 
-## About Laravel
+Buku Tamu Digital adalah solusi manajemen pengunjung modern yang dirancang untuk Sekolah, Instansi Pemerintah, maupun Perusahaan Swasta. Dilengkapi dengan fitur **White-Labeling** penuh, aplikasi ini siap digunakan dengan identitas brand Anda sendiri hanya dalam hitungan detik.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Unggulan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏢 1. Full White-Label System
+Ubah seluruh identitas aplikasi langsung dari Dashboard Admin tanpa menyentuh kode program:
+- Ubah Nama Aplikasi & Instansi.
+- Upload Logo & Favicon kustom.
+- Atur Alamat & Footer sesuai kebutuhan.
+- Branding otomatis sinkron ke: **Halaman Login, Dashboard Admin, Interface Kiosk, dan Laporan PDF.**
 
-## Learning Laravel
+### 📱 2. Interface Kiosk Mandiri
+Halaman khusus pengunjung yang sangat intuitif untuk proses check-in mandiri. Dilengkapi dengan:
+- Pencarian Data Host/Tujuan otomatis.
+- Generasi QR Code Kunjungan unik.
+- Interface Responsif & Modern.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔔 3. Integrasi WhatsApp (Optional)
+Notifikasi otomatis ke HP petugas atau tamu (membutuhkan WA Gateway) untuk memberikan kesan profesional dan modern.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 📄 4. Laporan Cerdas & Profesional
+- Ekspor laporan ke format **Excel** dan **PDF**.
+- Laporan PDF dilengkapi dengan Kop Surat otomatis (Logo & Alamat Instansi).
+- Filter laporan berdasarkan tanggal, status, dan tujuan.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🖥️ Kebutuhan Sistem
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **PHP 8.2** atau lebih tinggi.
+- **MySQL 8.0** atau MariaDB.
+- **Composer** (Dependency Manager).
+- Ekstensi PHP: `gd`, `bcmath`, `ctype`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo_mysql`, `tokenizer`, `xml`.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 🚀 Panduan Instalasi
 
-## Contributing
+1. **Clone & Install Dependency**
+   ```bash
+   git clone https://github.com/username/repository.git
+   cd bukutamu
+   composer install
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` dan atur koneksi database Anda.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Code of Conduct
+3. **Migrasi Database**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Setup Storage Link** (Penting untuk Logo & Foto)
+   ```bash
+   php artisan storage:link
+   ```
 
-## Security Vulnerabilities
+5. **Jalankan Aplikasi**
+   ```bash
+   php artisan serve
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🛠️ Panduan Penggunaan & Branding
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Akses Admin
+- **URL**: `yoursite.com/login`
+- **Default Login**: Cek file `database/seeders/UserSeeder.php` untuk akun admin pertama.
 
-Akun Default
-Role	Email	Password
-Super Admin	admin@smkn2jakarta.sch.id	admin123
-Resepsionis	resepsionis@smkn2jakarta.sch.id	resep123
-Staf/Guru	budi@smkn2jakarta.sch.id (dll)	staff123
+### Mengubah Identitas (White-Label)
+1. Masuk ke Dashboard Admin.
+2. Pilih menu **Pengaturan Umum**.
+3. Isi Nama Aplikasi, Nama Instansi, Alamat, dan Footer.
+4. Upload Logo & Favicon Anda.
+5. Klik **Simpan Perubahan**.
+
+### Sinkronisasi Tampilan
+Jika Logo atau Nama tidak langsung berubah di PDF atau Kiosk, gunakan fitur **"Hapus Cache"** yang tersedia di halaman Pengaturan Umum. Fitur ini akan menyegarkan tampilan tanpa menghapus data rahasia (Secret Key).
+
+---
+
+## 🛡️ Keamanan & Pemeliharaan
+
+- **Secret Key**: Pastikan `LICENSE_KEY` di file `.env` terjaga kerahasiaannya.
+- **Mode Produksi**: Pastikan `APP_DEBUG=false` pada file `.env` saat aplikasi sudah online.
+- **Backup**: Lakukan backup database secara berkala melalui menu yang tersedia atau database manager Anda.
+
+---
+
+## 📝 Lisensi
+Produk ini adalah produk komersial. Dilarang mendistribusikan ulang kode sumber tanpa izin tertulis dari pengembang.
+
+---
+**Developed with ❤️ for Professional Management.**
