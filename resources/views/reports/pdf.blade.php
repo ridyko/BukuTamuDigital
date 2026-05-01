@@ -25,14 +25,14 @@
             $logoPath = \App\Models\Setting::get('app_logo');
             $logoBase64 = null;
             
-            try {
-                if ($logoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($logoPath)) {
-                    $imageData = \Illuminate\Support\Facades\Storage::disk('public')->get($logoPath);
-                    $type = pathinfo($logoPath, PATHINFO_EXTENSION);
-                    $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
+            if ($logoPath) {
+                $logoFull = storage_path('app/public/' . $logoPath);
+                if (file_exists($logoFull)) {
+                    $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
+                    $mime = ($ext == 'jpg') ? 'jpeg' : $ext;
+                    $imageData = base64_encode(file_get_contents($logoFull));
+                    $logoBase64 = 'data:image/' . $mime . ';base64,' . $imageData;
                 }
-            } catch (\Exception $e) {
-                // Fail silently
             }
         @endphp
 
