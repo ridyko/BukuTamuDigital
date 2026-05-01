@@ -90,6 +90,13 @@ Route::middleware('auth')->group(function () {
     // ── User Management (Superadmin only) ───────────────────────
     Route::middleware('role:superadmin')->group(function () {
         Route::resource('users', UserController::class);
+        
+        // ── WhatsApp Settings ───────────────────────────────────
+        Route::get('/settings/whatsapp', [\App\Http\Controllers\WhatsAppSettingController::class, 'index'])->name('settings.whatsapp.index');
+        Route::post('/settings/whatsapp/update', [\App\Http\Controllers\WhatsAppSettingController::class, 'update'])->name('settings.whatsapp.update');
+        Route::post('/settings/whatsapp/start', [\App\Http\Controllers\WhatsAppSettingController::class, 'start'])->name('settings.whatsapp.start');
+        Route::post('/settings/whatsapp/stop', [\App\Http\Controllers\WhatsAppSettingController::class, 'stop'])->name('settings.whatsapp.stop');
+
         // Trigger auto-checkout manual (untuk testing / emergency)
         Route::post('/admin/auto-checkout', [VisitorController::class, 'triggerAutoCheckout'])->name('admin.auto-checkout');
     });

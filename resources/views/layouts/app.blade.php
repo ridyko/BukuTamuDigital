@@ -456,6 +456,9 @@
             <a href="{{ route('users.index') }}" class="nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
                 <i class="fas fa-user-gear"></i> Manajemen Pengguna
             </a>
+            <a href="{{ route('settings.whatsapp.index') }}" class="nav-item {{ request()->routeIs('settings.whatsapp.*') ? 'active' : '' }}">
+                <i class="fab fa-whatsapp"></i> WhatsApp Gateway
+            </a>
             @endif
 
             <div class="nav-label">Kiosk</div>

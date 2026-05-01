@@ -38,8 +38,11 @@ class InstallController extends Controller
             return back()->with('error', 'Secret Key tidak valid. Silakan hubungi pengembang untuk mendapatkan izin.');
         }
 
-        // Simpan key ke .env
-        $this->updateEnv('LICENSE_KEY', $request->license_key);
+        try {
+            $this->updateEnv('LICENSE_KEY', $request->license_key);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menyimpan kunci. Pastikan file .env dapat ditulis (Permission 666).');
+        }
 
         return redirect()->route('dashboard')->with('success', 'Aplikasi berhasil diaktifkan!');
     }
