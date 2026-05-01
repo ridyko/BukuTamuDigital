@@ -80,5 +80,26 @@
             </form>
         </div>
     </div>
+
+    {{-- System Maintenance --}}
+    <div class="card" style="max-width: 800px; margin: 24px auto;">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-tools" style="margin-right: 8px; color: var(--amber)"></i> Pemeliharaan Sistem</span>
+        </div>
+        <div class="card-body">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:20px">
+                <div style="flex:1">
+                    <div style="font-weight:600; font-size:14px; margin-bottom:4px">Bersihkan Cache Sistem</div>
+                    <div style="font-size:12px; color: var(--text-muted)">Gunakan fitur ini jika Anda merasa perubahan pengaturan tidak langsung muncul atau aplikasi terasa lambat. Ini akan menghapus cache view, konfigurasi, dan data sementara lainnya.</div>
+                </div>
+                <form action="{{ route('settings.clear-cache') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-warning" style="background: var(--amber); border:none; color:#000; padding:10px 20px; font-weight:700">
+                        <i class="fas fa-broom" style="margin-right:8px"></i> Hapus Cache
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

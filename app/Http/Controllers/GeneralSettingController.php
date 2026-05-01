@@ -52,4 +52,17 @@ class GeneralSettingController extends Controller
 
         return back()->with('success', 'Pengaturan identitas berhasil diperbarui!');
     }
+
+    public function clearCache()
+    {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            
+            return back()->with('success', 'Semua cache sistem berhasil dibersihkan! Aplikasi kini dalam kondisi segar.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal membersihkan cache: ' . $e->getMessage());
+        }
+    }
 }

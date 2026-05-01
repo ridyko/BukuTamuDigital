@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
         // General Settings
         Route::get('/settings/general', [\App\Http\Controllers\GeneralSettingController::class, 'index'])->name('settings.general');
         Route::post('/settings/general', [\App\Http\Controllers\GeneralSettingController::class, 'update'])->name('settings.general.update');
+        Route::post('/settings/clear-cache', [\App\Http\Controllers\GeneralSettingController::class, 'clearCache'])->name('settings.clear-cache');
 
         // ── WhatsApp Settings ───────────────────────────────────
         Route::get('/settings/whatsapp', [\App\Http\Controllers\WhatsAppSettingController::class, 'index'])->name('settings.whatsapp.index');
