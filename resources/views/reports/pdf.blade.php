@@ -23,9 +23,11 @@
     <div class="header">
         @php
             $logoPath = \App\Models\Setting::get('app_logo');
-            $logoFull = public_path('storage/' . $logoPath);
+            // Gunakan storage_path agar lebih akurat mencari file internal
+            $logoFull = $logoPath ? storage_path('app/public/' . $logoPath) : null;
             $logoBase64 = null;
-            if ($logoPath && file_exists($logoFull)) {
+            
+            if ($logoFull && file_exists($logoFull)) {
                 $type = pathinfo($logoFull, PATHINFO_EXTENSION);
                 $data = file_get_contents($logoFull);
                 $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
