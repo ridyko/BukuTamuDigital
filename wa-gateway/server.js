@@ -10,10 +10,12 @@ console.log('Menginisialisasi WhatsApp Client...');
 
 const client = new Client({
     authStrategy: new LocalAuth({
-        clientId: "smkn2-session"
+        clientId: "smkn2-session",
+        dataPath: "./.wwebjs_auth" // Simpan auth di folder lokal
     }),
     puppeteer: {
         headless: true,
+        userDataDir: './.puppeteer_cache', // Simpan cache di folder lokal (hindari /Users/mac)
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',

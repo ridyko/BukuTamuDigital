@@ -157,3 +157,6 @@
 2026/05/01-18:21:46.258 1cf5d Delete type=2 #57
 2026/05/01-18:21:46.258 1cf5d Delete type=2 #56
 2026/05/01-18:21:46.258 1cf5d Delete type=2 #55
+2026/05/01-18:30:01.234 1cf5d Level-0 table #66: started
+2026/05/01-18:30:01.266 1cf5d Level-0 table #66: 1076419 bytes OK
+2026/05/01-18:30:01.269 1cf5d Delete type=0 #59

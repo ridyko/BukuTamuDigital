@@ -47,8 +47,12 @@ class WhatsAppSettingController extends Controller
         $path = base_path('wa-gateway');
         $logPath = base_path('storage/logs/wa-gateway.log');
 
-        // Menjalankan di background menggunakan nohup (Linux/Mac)
-        $cmd = "cd {$path} && nohup node server.js > {$logPath} 2>&1 & echo $!";
+        // Bersihkan log lama agar tidak membingungkan
+        File::put($logPath, "--- Memulai Gateway (" . now()->format('H:i:s') . ") ---\n");
+
+        // Menjalankan di background dengan redirect stdin dari /dev/null untuk mencegah error ioctl
+        $nodePath = '/usr/local/bin/node'; // Gunakan path absolut hasil 'which node'
+        $cmd = "cd {$path} && {$nodePath} server.js < /dev/null > {$logPath} 2>&1 & echo $!";
         $pid = shell_exec($cmd);
 
         if ($pid) {
