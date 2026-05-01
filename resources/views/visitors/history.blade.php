@@ -78,7 +78,7 @@
                             {{ $v->visit_code }}
                         </code>
                     </td>
-                    <td style="font-weight:600;color:#f1f5f9">{{ $v->name }}</td>
+                    <td style="font-weight:600;color:var(--text-primary)">{{ $v->name }}</td>
                     <td>{{ $v->institution ?: '-' }}</td>
                     <td style="font-size:12.5px">{{ $v->host?->name ?? $v->department ?? '-' }}</td>
                     <td style="white-space:nowrap;font-size:12.5px">{{ $v->check_in_at?->format('d/m/Y H:i') }}</td>

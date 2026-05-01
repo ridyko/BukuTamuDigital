@@ -108,7 +108,7 @@
                     @foreach($activeVisitors as $v)
                     <tr>
                         <td>
-                            <div style="font-weight:600;color:#f1f5f9">{{ $v->name }}</div>
+                            <div style="font-weight:600;color:var(--text-primary)">{{ $v->name }}</div>
                             <div style="font-size:11px;color:#4b6074">{{ $v->institution ?: '-' }}</div>
                         </td>
                         <td>{{ $v->host?->name ?? $v->department ?? '-' }}</td>
@@ -205,7 +205,7 @@
                 <tr>
                     <td>
                         <span style="font-size:14px">{{ $log->action_icon }}</span>
-                        <span style="margin-left:4px;font-size:12.5px;font-weight:500;color:#f1f5f9">{{ $log->action_label }}</span>
+                        <span style="margin-left:4px;font-size:12.5px;font-weight:500;color:var(--text-primary)">{{ $log->action_label }}</span>
                     </td>
                     <td>{{ $log->visitor?->name ?? '-' }}</td>
                     <td>{{ $log->performer?->name ?? '⚙️ Sistem' }}</td>

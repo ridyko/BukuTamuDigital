@@ -64,7 +64,7 @@
                                 {{ strtoupper(substr($user->name,0,1)) }}
                             </div>
                             <div>
-                                <div style="font-weight:600;color:#f1f5f9">{{ $user->name }}</div>
+                                <div style="font-weight:600;color:var(--text-primary)">{{ $user->name }}</div>
                                 <div style="font-size:11px;color:#4b6074">{{ $user->email }}</div>
                             </div>
                         </div>
