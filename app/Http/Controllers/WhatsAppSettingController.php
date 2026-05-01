@@ -46,13 +46,16 @@ class WhatsAppSettingController extends Controller
 
         $path = base_path('wa-gateway');
         $logPath = base_path('storage/logs/wa-gateway.log');
+        $qrPath = storage_path('app/public/wa_qr.txt');
 
-        // Bersihkan log lama agar tidak membingungkan
+        // Bersihkan data lama
         File::put($logPath, "--- Memulai Gateway (" . now()->format('H:i:s') . ") ---\n");
+        if (File::exists($qrPath)) File::delete($qrPath);
 
         // Menjalankan di background dengan redirect stdin dari /dev/null untuk mencegah error ioctl
-        $nodePath = '/usr/local/bin/node'; // Gunakan path absolut hasil 'which node'
-        $cmd = "cd {$path} && {$nodePath} server.js < /dev/null > {$logPath} 2>&1 & echo $!";
+        // Kita juga set HOME ke folder gateway agar Puppeteer tidak mencoba akses /Users/mac
+        $nodePath = '/usr/local/bin/node';
+        $cmd = "cd {$path} && export HOME={$path} && {$nodePath} server.js < /dev/null > {$logPath} 2>&1 & echo $!";
         $pid = shell_exec($cmd);
 
         if ($pid) {
@@ -100,5 +103,41 @@ class WhatsAppSettingController extends Controller
             return File::get($logPath);
         }
         return 'Belum ada log aktivitas.';
+    }
+
+    /**
+     * Reset Sesi WhatsApp (Hapus Folder Auth)
+     */
+    public function reset()
+    {
+        $this->stop();
+        
+        $path = base_path('wa-gateway/auth_session');
+        if (File::exists($path)) {
+            File::deleteDirectory($path);
+        }
+
+        return back()->with('success', 'Sesi berhasil direset. Silakan jalankan kembali gateway.');
+    }
+
+    /**
+     * Tampilkan QR Code secara langsung
+     */
+    public function qr()
+    {
+        $qrPath = storage_path('app/public/wa_qr.txt');
+        if (!File::exists($qrPath)) {
+            return "QR Code belum tersedia. Silakan jalankan gateway terlebih dahulu.";
+        }
+
+        $qrContent = File::get($qrPath);
+        $url = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($qrContent);
+
+        return "<html><body style='background:#0f172a; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; color:white; font-family:sans-serif;'>
+                    <h2 style='margin-bottom:20px'>Scan QR Code WhatsApp</h2>
+                    <img src='{$url}' style='border:15px solid white; border-radius:15px; box-shadow:0 0 50px rgba(0,0,0,0.5)'>
+                    <p style='margin-top:30px; color:#94a3b8'>Gunakan WhatsApp > Perangkat Tertaut > Tautkan Perangkat</p>
+                    <button onclick='location.reload()' style='margin-top:20px; padding:10px 20px; border-radius:8px; border:none; background:#3b82f6; color:white; cursor:pointer'>Refresh QR</button>
+                </body></html>";
     }
 }

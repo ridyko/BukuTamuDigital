@@ -1,75 +1,85 @@
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
-const express = require('express');
-const app = express();
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys");
+const express = require("express");
+const QRCode = require("qrcode");
+const pino = require("pino");
+const fs = require("fs");
+const path = require("path");
 
+const app = express();
 app.use(express.json());
 
-console.log('--- WHATSAPP GATEWAY SMKN 2 JAKARTA ---');
-console.log('Menginisialisasi WhatsApp Client...');
+let sock;
+let qrCodeText = "";
+const publicPath = path.join(__dirname, '../storage/app/public');
 
-const client = new Client({
-    authStrategy: new LocalAuth({
-        clientId: "smkn2-session",
-        dataPath: "./.wwebjs_auth" // Simpan auth di folder lokal
-    }),
-    puppeteer: {
-        headless: true,
-        userDataDir: './.puppeteer_cache', // Simpan cache di folder lokal (hindari /Users/mac)
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--single-process',
-            '--disable-gpu'
-        ],
-    }
-});
+async function connectToWhatsApp() {
+    console.log("[LOG] Mencari versi WhatsApp terbaru...");
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    console.log(`[LOG] Menggunakan WA Web v${version.join('.')} (Latest: ${isLatest})`);
 
-// Event saat QR Code muncul
-client.on('qr', (qr) => {
-    console.log('\n[!] SILAKAN SCAN QR CODE DI BAWAH INI DENGAN WHATSAPP ANDA:\n');
-    qrcode.generate(qr, { small: true });
-});
+    const { state, saveCreds } = await useMultiFileAuthState('auth_session');
+    
+    sock = makeWASocket({
+        version,
+        auth: state,
+        printQRInTerminal: false,
+        logger: pino({ level: 'silent' }),
+        browser: ["Ubuntu", "Chrome", "20.0.04"], // Identitas lebih umum
+    });
 
-// Event saat berhasil login
-client.on('ready', () => {
-    console.log('\n[V] WhatsApp Gateway sudah siap dan terhubung!');
-    console.log('Endpoint: http://localhost:3000/send-message');
-});
+    sock.ev.on('connection.update', async (update) => {
+        const { connection, lastDisconnect, qr } = update;
+        
+        if (qr) {
+            qrCodeText = qr;
+            console.log("[!] QR Code baru tersedia.");
+            fs.writeFileSync(path.join(publicPath, 'wa_qr.txt'), qr);
+        }
 
-// Event jika terputus
-client.on('disconnected', (reason) => {
-    console.log('WhatsApp terputus:', reason);
-});
+        if (connection === 'close') {
+            const statusCode = lastDisconnect?.error?.output?.statusCode;
+            console.log(`[!] Koneksi Terputus. Status: ${statusCode}`);
+            
+            // Jika status 401 atau 405, biasanya sesi sudah tidak valid
+            if (statusCode === DisconnectReason.loggedOut || statusCode === 401 || statusCode === 405) {
+                console.log("[!] Sesi tidak valid atau telah logout. Menghapus folder sesi...");
+                if (fs.existsSync('auth_session')) fs.rmSync('auth_session', { recursive: true, force: true });
+                setTimeout(() => connectToWhatsApp(), 2000);
+            } else {
+                console.log("[!] Mencoba menghubungkan kembali dalam 5 detik...");
+                setTimeout(() => connectToWhatsApp(), 5000);
+            }
+        } else if (connection === 'open') {
+            console.log('[V] WhatsApp Gateway BERHASIL TERHUBUNG!');
+            qrCodeText = "CONNECTED";
+            if (fs.existsSync(path.join(publicPath, 'wa_qr.txt'))) {
+                fs.unlinkSync(path.join(publicPath, 'wa_qr.txt'));
+            }
+        }
+    });
 
-// Endpoint untuk menerima pesan dari Laravel
-app.post('/send-message', async (req, res) => {
+    sock.ev.on('creds.update', saveCreds);
+}
+
+app.post("/send-message", async (req, res) => {
     const { phone, message } = req.body;
-
-    if (!phone || !message) {
-        return res.status(400).json({ status: false, error: 'Nomor HP dan Pesan wajib diisi.' });
+    if (!sock || qrCodeText !== "CONNECTED") {
+        console.log(`[X] GAGAL: Mencoba kirim ke ${phone} tapi gateway belum terhubung.`);
+        return res.status(500).json({ status: false, error: "Gateway belum siap" });
     }
 
     try {
-        const chatId = phone.includes('@c.us') ? phone : `${phone}@c.us`;
-        await client.sendMessage(chatId, message);
-        
-        console.log(`[LOG] Pesan terkirim ke ${phone}`);
-        res.json({ status: true, message: 'Pesan berhasil dikirim.' });
+        const id = phone.includes("@s.whatsapp.net") ? phone : `${phone}@s.whatsapp.net`;
+        await sock.sendMessage(id, { text: message });
+        console.log(`[SEND] Berhasil kirim pesan ke: ${phone}`);
+        res.json({ status: true });
     } catch (error) {
-        console.error(`[ERROR] Gagal kirim ke ${phone}:`, error.message);
+        console.log(`[X] ERROR kirim ke ${phone}: ${error.message}`);
         res.status(500).json({ status: false, error: error.message });
     }
 });
 
-// Jalankan Server
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`\n[I] Server API berjalan di http://localhost:${PORT}`);
+app.listen(3000, () => {
+    console.log("--- WHATSAPP GATEWAY AKTIF ---");
+    connectToWhatsApp();
 });
-
-client.initialize();

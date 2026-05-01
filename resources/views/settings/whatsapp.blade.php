@@ -32,10 +32,28 @@
                     <h3 style="font-size:18px;color:#fb7185;margin-bottom:4px">Gateway Mati</h3>
                     <p style="font-size:13px;color:#94a3b8;margin-bottom:24px">Server WhatsApp lokal tidak terdeteksi.</p>
                     
-                    <form action="{{ route('settings.whatsapp.start') }}" method="POST">
+                    {{-- Progress Bar (Hidden by default) --}}
+                    <div id="loading-area" style="display:none; margin-bottom: 24px;">
+                        <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:8px">
+                            <span id="loading-text">Menyiapkan Browser...</span>
+                            <span id="loading-percent">0%</span>
+                        </div>
+                        <div style="width:100%; height:6px; background:#1f2d4a; border-radius:10px; overflow:hidden">
+                            <div id="progress-bar" style="width:0%; height:100%; background:var(--accent); transition:width 0.3s"></div>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('settings.whatsapp.start') }}" method="POST" id="start-form">
                         @csrf
-                        <button type="submit" class="btn btn-success" style="width:100%;justify-content:center">
+                        <button type="submit" class="btn btn-success" style="width:100%;justify-content:center; margin-bottom:12px" id="start-btn">
                             <i class="fas fa-play"></i> Jalankan Gateway
+                        </button>
+                    </form>
+
+                    <form action="{{ route('settings.whatsapp.reset') }}" method="POST" onsubmit="return confirm('Hapus semua data sesi dan scan ulang?')">
+                        @csrf
+                        <button type="submit" class="btn btn-outline" style="width:100%;justify-content:center; color:#94a3b8; border-color:#1f2d4a">
+                            <i class="fas fa-undo"></i> Reset Sesi & Scan Ulang
                         </button>
                     </form>
                 @endif
@@ -62,15 +80,33 @@
     </div>
 
     {{-- KOLOM KANAN: Logs & QR --}}
-    <div class="card" style="display:flex; flex-direction:column">
+    <div class="card" style="display:flex; flex-direction:column; height: 100%">
         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center">
             <span class="card-title">Aktivitas & QR Code</span>
-            <button onclick="location.reload()" class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:11px">
-                <i class="fas fa-sync"></i> Refresh
-            </button>
+            <div style="display:flex; gap:8px">
+                <a href="{{ route('settings.whatsapp.qr') }}" target="_blank" class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:11px; border-color:var(--accent); color:var(--accent)">
+                    <i class="fas fa-qrcode"></i> Buka QR di Tab Baru
+                </a>
+                <button onclick="location.reload()" class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:11px">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+            </div>
         </div>
-        <div class="card-body" style="flex:1; background:#0a0f1e; border-radius:0 0 12px 12px; padding:0; overflow:hidden">
-            <pre style="margin:0; padding:20px; color:#10b981; font-family: 'Courier New', Courier, monospace; font-size:12px; line-height:1.4; overflow-y:auto; height: 500px;">{{ $logs }}</pre>
+        <div class="card-body" style="flex:1; background:#0a0f1e; border-radius:0 0 12px 12px; padding:0; overflow:hidden; position:relative; display:flex; flex-direction:column">
+            @php
+                $qrFile = storage_path('app/public/wa_qr.txt');
+                $qrContent = File::exists($qrFile) ? File::get($qrFile) : null;
+            @endphp
+
+            @if($qrContent && !$status)
+                <div style="padding:40px; text-align:center; background:#111827; border-bottom:1px solid #1f2d4a">
+                    <h4 style="color:white; margin-bottom:20px; font-size:14px">Scan QR Code Berikut:</h4>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode($qrContent) }}" style="border:10px solid white; border-radius:10px">
+                    <p style="color:#94a3b8; font-size:12px; margin-top:20px">Buka WhatsApp > Perangkat Tertaut > Tautkan Perangkat</p>
+                </div>
+            @endif
+
+            <pre style="margin:0; padding:20px; color:#10b981; font-family: 'Courier New', Courier, monospace; font-size:12px; line-height:1.4; overflow-y:auto; flex:1; min-height:500px">{{ $logs }}</pre>
         </div>
         <div style="padding:12px; font-size:11px; color:#4b6074; background:rgba(0,0,0,0.2); border-top:1px solid #1f2d4a">
             <i class="fas fa-info-circle"></i> Jika muncul QR Code di atas, silakan scan menggunakan aplikasi WhatsApp Anda (Perangkat Tertaut).
@@ -79,6 +115,48 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const startForm = document.getElementById('start-form');
+    const startBtn = document.getElementById('start-btn');
+    const loadingArea = document.getElementById('loading-area');
+    const progressBar = document.getElementById('progress-bar');
+    const loadingPercent = document.getElementById('loading-percent');
+    const loadingText = document.getElementById('loading-text');
+
+    if (startForm) {
+        startForm.addEventListener('submit', function() {
+            startBtn.style.display = 'none';
+            loadingArea.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = progress + '%';
+                loadingPercent.innerText = progress + '%';
+
+                if (progress < 30) {
+                    loadingText.innerText = 'Menginisialisasi Node.js...';
+                } else if (progress < 60) {
+                    loadingText.innerText = 'Membuka Headless Browser...';
+                } else if (progress < 90) {
+                    loadingText.innerText = 'Memuat WhatsApp Web...';
+                } else {
+                    loadingText.innerText = 'Menghasilkan QR Code...';
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        location.reload(); // Refresh untuk melihat QR
+                    }, 1000);
+                }
+            }, 200); // 200ms * 100 = 20 detik
+        });
+    }
+</script>
+@endpush
 
 @push('styles')
 <style>

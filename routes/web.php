@@ -96,6 +96,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/settings/whatsapp/update', [\App\Http\Controllers\WhatsAppSettingController::class, 'update'])->name('settings.whatsapp.update');
         Route::post('/settings/whatsapp/start', [\App\Http\Controllers\WhatsAppSettingController::class, 'start'])->name('settings.whatsapp.start');
         Route::post('/settings/whatsapp/stop', [\App\Http\Controllers\WhatsAppSettingController::class, 'stop'])->name('settings.whatsapp.stop');
+        Route::post('/settings/whatsapp/reset', [\App\Http\Controllers\WhatsAppSettingController::class, 'reset'])->name('settings.whatsapp.reset');
+        Route::get('/settings/whatsapp/qr', [\App\Http\Controllers\WhatsAppSettingController::class, 'qr'])->name('settings.whatsapp.qr');
 
         // Trigger auto-checkout manual (untuk testing / emergency)
         Route::post('/admin/auto-checkout', [VisitorController::class, 'triggerAutoCheckout'])->name('admin.auto-checkout');
