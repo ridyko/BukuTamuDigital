@@ -8,6 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        // Cegah flashing (FOUC) dengan mengecek tema di awal
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.add('light-mode');
+        }
+    </script>
+    <style>
     <style>
         :root {
             --sidebar-w: 260px;
@@ -31,8 +38,24 @@
             --radius-sm: 8px;
             --shadow: 0 4px 24px rgba(0,0,0,0.35);
         }
+
+        /* ── LIGHT MODE VARIABLES ──────────────── */
+        html.light-mode {
+            --bg-dark: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-sidebar-hover: #f1f5f9;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --accent-glow: rgba(59,130,246,0.08);
+        }
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); }
+        html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); transition: background 0.3s, color 0.3s; }
         a { color: inherit; text-decoration: none; }
         img { display: block; max-width: 100%; }
 
@@ -498,7 +521,12 @@
         <header class="topbar">
             <div class="topbar-title">@yield('page-title', 'Dashboard')</div>
             <div class="topbar-right">
-                <div class="topbar-time" id="live-clock">--:--</div>
+                <div class="topbar-time" id="live-clock" style="margin-right: 8px;">--:--</div>
+
+                {{-- ── Theme Toggle ────────────────── --}}
+                <button id="theme-toggle" class="btn-icon" title="Ganti Tema" style="background: var(--bg-dark); border: 1px solid var(--border); width: 34px; height: 34px; border-radius: 8px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s;">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
 
                 {{-- ── Notification Bell ────────────── --}}
                 <div class="notif-wrap" id="notif-wrap">
@@ -652,6 +680,35 @@ function pollNotifications() {
         }).catch(() => {});
 }
 setInterval(pollNotifications, 30000);
+
+/* ── Theme Switcher Logic ──────────────────────────── */
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon   = document.getElementById('theme-icon');
+
+function updateThemeIcon() {
+    if (document.documentElement.classList.contains('light-mode')) {
+        themeIcon.className = 'fas fa-sun';
+        themeToggle.title = 'Ganti ke Dark Mode';
+    } else {
+        themeIcon.className = 'fas fa-moon';
+        themeToggle.title = 'Ganti ke Light Mode';
+    }
+}
+
+// Inisialisasi ikon saat load
+updateThemeIcon();
+
+themeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('light-mode');
+    
+    if (document.documentElement.classList.contains('light-mode')) {
+        localStorage.setItem('theme', 'light');
+    } else {
+        localStorage.setItem('theme', 'dark');
+    }
+    
+    updateThemeIcon();
+});
 </script>
 @stack('scripts')
 </body>
