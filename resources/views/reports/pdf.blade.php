@@ -27,11 +27,20 @@
             
             if ($logoPath) {
                 $logoFull = storage_path('app/public/' . $logoPath);
-                if (file_exists($logoFull)) {
-                    $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
-                    $mime = ($ext == 'jpg') ? 'jpeg' : $ext;
+                if (file_exists($logoFull) && is_readable($logoFull)) {
                     $imageData = base64_encode(file_get_contents($logoFull));
-                    $logoBase64 = 'data:image/' . $mime . ';base64,' . $imageData;
+                    // Pemetaan otomatis Mime Type berdasarkan ekstensi
+                    $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
+                    $mimes = [
+                        'png'  => 'image/png',
+                        'jpg'  => 'image/jpeg',
+                        'jpeg' => 'image/jpeg',
+                        'gif'  => 'image/gif',
+                        'svg'  => 'image/svg+xml',
+                        'webp' => 'image/webp'
+                    ];
+                    $mimeType = $mimes[$ext] ?? 'image/png';
+                    $logoBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
                 }
             }
         @endphp
