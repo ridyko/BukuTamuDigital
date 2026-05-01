@@ -21,9 +21,19 @@
 </head>
 <body>
     <div class="header">
-        @if($appLogo)
-            {{-- Menggunakan path absolut untuk dompdf --}}
-            <img src="{{ public_path('storage/'.\App\Models\Setting::get('app_logo')) }}" style="height: 50px; margin-bottom: 10px;">
+        @php
+            $logoPath = \App\Models\Setting::get('app_logo');
+            $logoFull = public_path('storage/' . $logoPath);
+            $logoBase64 = null;
+            if ($logoPath && file_exists($logoFull)) {
+                $type = pathinfo($logoFull, PATHINFO_EXTENSION);
+                $data = file_get_contents($logoFull);
+                $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
+        @endphp
+
+        @if($logoBase64)
+            <img src="{{ $logoBase64 }}" style="height: 50px; margin-bottom: 10px;">
         @endif
         <h2>{{ strtoupper($appName) }}</h2>
         <p>{{ $appOrg }}</p>
