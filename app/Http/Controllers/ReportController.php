@@ -62,15 +62,45 @@ class ReportController extends Controller
 
         $visitors = $query->get();
         
-        // Pre-process logo to Base64 for maximum compatibility
+        // Re-encode logo menggunakan GD agar "bersih" dan ringan untuk dompdf
         $logoBase64 = null;
         $logoPath = \App\Models\Setting::get('app_logo');
         if ($logoPath) {
             $logoFull = storage_path('app/public/' . $logoPath);
             if (file_exists($logoFull)) {
-                $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
-                $mime = ($ext == 'png') ? 'image/png' : 'image/jpeg';
-                $logoBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($logoFull));
+                try {
+                    // Load gambar asli
+                    $img = null;
+                    $ext = strtolower(pathinfo($logoFull, PATHINFO_EXTENSION));
+                    if ($ext == 'png') $img = @imagecreatefrompng($logoFull);
+                    elseif ($ext == 'jpg' || $ext == 'jpeg') $img = @imagecreatefromjpeg($logoFull);
+                    
+                    if ($img) {
+                        // Resize sedikit agar tidak terlalu berat (max height 100px)
+                        $width = imagesx($img);
+                        $height = imagesy($img);
+                        $newHeight = 100;
+                        $newWidth = ($width / $height) * $newHeight;
+                        
+                        $tmpImg = imagecreatetruecolor($newWidth, $newHeight);
+                        // Jaga transparansi PNG
+                        imagealphablending($tmpImg, false);
+                        imagesavealpha($tmpImg, true);
+                        imagecopyresampled($tmpImg, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                        
+                        // Output ke buffer sebagai PNG bersih
+                        ob_start();
+                        imagepng($tmpImg);
+                        $logoData = ob_get_clean();
+                        $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+                        
+                        imagedestroy($img);
+                        imagedestroy($tmpImg);
+                    }
+                } catch (\Exception $e) {
+                    // Fallback ke base64 mentah jika GD gagal
+                    $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoFull));
+                }
             }
         }
         
