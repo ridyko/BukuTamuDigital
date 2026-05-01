@@ -21,8 +21,13 @@
 </head>
 <body>
     <div class="header">
-        <h2>Laporan Kunjungan Tamu</h2>
-        <p>SMK Negeri 2 Jakarta</p>
+        @if($appLogo)
+            {{-- Menggunakan path absolut untuk dompdf --}}
+            <img src="{{ public_path('storage/'.\App\Models\Setting::get('app_logo')) }}" style="height: 50px; margin-bottom: 10px;">
+        @endif
+        <h2>{{ strtoupper($appName) }}</h2>
+        <p>{{ $appOrg }}</p>
+        <div style="font-size: 10px; color: #666; margin-top: 5px;">{{ \App\Models\Setting::get('app_address') }}</div>
     </div>
 
     <div class="meta">
@@ -70,7 +75,7 @@
     </table>
 
     <div class="footer">
-        Dokumen ini dibuat otomatis oleh Sistem Buku Tamu Digital SMKN 2 Jakarta.
+        {{ $gSettings['app_footer'] ?? 'Dokumen ini dibuat otomatis oleh '.$appName.' '.$appOrg }}
     </div>
 </body>
 </html>
