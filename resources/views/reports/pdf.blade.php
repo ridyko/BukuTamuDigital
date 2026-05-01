@@ -23,14 +23,16 @@
     <div class="header">
         @php
             $logoPath = \App\Models\Setting::get('app_logo');
-            // Gunakan storage_path agar lebih akurat mencari file internal
-            $logoFull = $logoPath ? storage_path('app/public/' . $logoPath) : null;
             $logoBase64 = null;
             
-            if ($logoFull && file_exists($logoFull)) {
-                $type = pathinfo($logoFull, PATHINFO_EXTENSION);
-                $data = file_get_contents($logoFull);
-                $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            try {
+                if ($logoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($logoPath)) {
+                    $imageData = \Illuminate\Support\Facades\Storage::disk('public')->get($logoPath);
+                    $type = pathinfo($logoPath, PATHINFO_EXTENSION);
+                    $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
+                }
+            } catch (\Exception $e) {
+                // Fail silently
             }
         @endphp
 
